@@ -20,7 +20,10 @@ text_posts = {
 
 # To set up new get api
 @app.get("/posts")
-def get_all_posts():
+# added query param limit to limit the number of posts returned
+def get_all_post(limit: int = None):
+    if limit:
+        return list(text_posts.values())[:limit]
     return text_posts
 
 # testing get api with id as input and return the post content
