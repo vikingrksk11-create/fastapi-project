@@ -1,4 +1,8 @@
 from fastapi import FastAPI
+from app.schema import PostCreate
+from fastapi import HTTPException
+
+# from project_one.app.schema import postCreate
 
 # setting up application api's
 app = FastAPI()
@@ -21,17 +25,25 @@ text_posts = {
 # To set up new get api
 @app.get("/posts")
 # added query param limit to limit the number of posts returned
-def get_all_post(limit: int = None):
+def get_all_post(limit: int):
     if limit:
         return list(text_posts.values())[:limit]
     return text_posts
 
-# testing get api with id as input and return the post content
+# testing get api with id as input and return the post content with path parameter
 @app.get("/posts/{id}")
 def get_post(id: int):
     if id not in text_posts:
         raise HTTPException(status_code=404, detail="Post not found")
     return text_posts.get(id)
+
+# post api to add new post with schema validation using pydantic model postCreate and return the new post with id and content
+@app.post("/posts")
+def create_post(post: PostCreate):
+    new_id = max(text_posts.keys()) + 1
+    new_post = {"title": post.title, "content": post.content}
+    text_posts[new_id] = new_post
+    return new_post
 
 # post api to add two numbers
 @app.post("/add_numbers")
