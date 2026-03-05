@@ -32,14 +32,14 @@ def get_all_post(limit: int):
 
 # testing get api with id as input and return the post content with path parameter
 @app.get("/posts/{id}")
-def get_post(id: int):
+def get_post(id: int) -> PostCreate:
     if id not in text_posts:
         raise HTTPException(status_code=404, detail="Post not found")
     return text_posts.get(id)
 
 # post api to add new post with schema validation using pydantic model postCreate and return the new post with id and content
 @app.post("/posts")
-def create_post(post: PostCreate):
+def create_post(post: PostCreate) -> PostCreate:
     new_id = max(text_posts.keys()) + 1
     new_post = {"title": post.title, "content": post.content}
     text_posts[new_id] = new_post
